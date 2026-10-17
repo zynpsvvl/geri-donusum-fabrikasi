@@ -8,13 +8,13 @@ Code Week etkinliği için hazırlanmış, 3. ve 4. sınıf öğrencilerine yön
 
 ## Oyun
 
-Öğrenciler, plastik şişe, kâğıt kutu ve metal içecek kutularını doğru geri dönüşüm bölümüne göndermek için Tiko'ya komutlar verir. Kod blokları bir program alanına yerleştirilir; program çalıştırıldığında ürünlerin bant üzerinde doğru kutulara gidişi animasyonla gösterilir.
+Öğrenciler, plastik, kâğıt, metal ve cam ürünleri karışık sırayla doğru geri dönüşüm bölümüne göndermek için Tiko'ya komutlar verir. Kod blokları bir program alanına yerleştirilir; program çalıştırıldığında her ürünün doğru kutuya gidişi animasyonla gösterilir. Seviyeler tamamlandıkça yeni zorluk aşamaları açılır.
 
 Görevler sırayla şu becerileri çalıştırır:
 
-1. **Malzeme tanıma:** Ürünün hangi malzemeden yapıldığını belirleme.
-2. **Döngü kurma:** Aynı ayrıştırma adımlarını hatta gelen ürünlere uygulama.
-3. **Hata ayıklama:** Yanlış yönlendirme koşulunu program izinden bulup düzeltme.
+1. **Başlangıç:** Dört karışık ürünü dört geri dönüşüm kutusuna ayır.
+2. **Orta:** Aynı algoritmayı altı üründe, tekrarlanan malzemelerle çalıştır.
+3. **İleri:** Sekiz ürünü ayır, yanlış cam yönlendirmesini program izinden bulup düzelt.
 
 ## Öğrenme hedefleri
 
@@ -23,6 +23,7 @@ Görevler sırayla şu becerileri çalıştırır:
 - Döngü ile tekrar eden işlemleri fark etme
 - Programı izleyerek hatayı bulma ve düzeltme
 - Geri dönüşüm malzemelerini doğru sınıflandırma
+- Başarıyla tamamlanan seviyelerle giderek artan zorlukta çalışma
 
 ## Sınıfta kullanım
 
