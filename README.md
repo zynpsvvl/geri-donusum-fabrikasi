@@ -10,6 +10,8 @@ Code Week etkinliği için hazırlanmış, 3. ve 4. sınıf öğrencilerine yön
 
 Öğrenciler, plastik, kâğıt, metal ve cam ürünleri karışık sırayla doğru geri dönüşüm bölümüne göndermek için Tiko'ya komutlar verir. Kod blokları bir program alanına yerleştirilir; program çalıştırıldığında her ürünün doğru kutuya gidişi animasyonla gösterilir. Seviyeler tamamlandıkça yeni zorluk aşamaları açılır.
 
+Her seviyede **30 farklı atık sırası** vardır. Öğretmen akış numarasını seçebilir; aynı tahtada kullanırken her öğrenci için **Sonraki öğrenci** düğmesiyle yeni sıra atanır. Akış 30’dan sonra başa döner.
+
 Görevler sırayla şu becerileri çalıştırır:
 
 1. **Başlangıç:** Dört karışık ürünü dört geri dönüşüm kutusuna ayır.
@@ -32,7 +34,7 @@ Görevler sırayla şu becerileri çalıştırır:
 3. Programı çalıştırıp sonuçları tahminlerle karşılaştırın.
 4. Hata ayıklama görevinde öğrencilerden yanlış koşulu ve düzeltme gerekçelerini açıklamalarını isteyin.
 
-Oyun tek bilgisayarda bireysel veya küçük gruplarla kullanılabilir. İnternet erişimi gerektirmeyen çevrimdışı dosyası da repoda `index.html` olarak bulunur.
+Oyun akıllı tahta ve dokunmatik ekran için büyük dokunma hedeflerine sahiptir; komutlar dokunarak eklenir, oklarla sıralanır. Oyun tek bilgisayarda bireysel veya küçük gruplarla kullanılabilir. İnternet erişimi gerektirmeyen çevrimdışı dosyası da repoda `index.html` olarak bulunur.
 
 ## Çalıştırma
 
