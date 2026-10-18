@@ -76,6 +76,16 @@
     .mission h2 { margin: 7px 0 7px; font-size: 21px; line-height: 1.15; letter-spacing: -.025em; }
     .mission-copy { margin: 0; color: #62647f; font-size: 13px; line-height: 1.5; }
     .level-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 17px 0 16px; }
+    .flow-assignment { display: grid; gap: 8px; margin: 4px 0 15px; padding: 12px; border: 1px solid #c7e9df; border-radius: 13px; background: linear-gradient(145deg, #f1fff8, #f6fbff); }
+    .flow-assignment-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .flow-assignment-label { color: #26745d; font-size: 10px; font-weight: 900; letter-spacing: .09em; }
+    .flow-badge { color: #183b46; font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .flow-controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; }
+    .flow-select, .flow-next { width: 100%; min-width: 0; min-height: 44px; padding: 9px 11px; border: 1px solid #c8dcd7; border-radius: 9px; color: #173b46; background: #fff; font: inherit; font-size: 12px; font-weight: 800; }
+    .flow-select { cursor: pointer; }
+    .flow-next { border-color: #168568; color: #fff; background: linear-gradient(110deg, #16a77f, #078a90); cursor: pointer; }
+    .flow-next:hover { filter: brightness(1.04); }
+    .flow-help { margin: 0; color: #58726e; font-size: 10px; line-height: 1.4; }
     .level-tab { min-height: 60px; padding: 8px 4px; border: 1px solid #e1d9ff; border-radius: 13px; color: #696886; background: linear-gradient(145deg, #fcfbff, #f4f0ff); cursor: pointer; transition: .18s ease; }
     .level-tab:hover { border-color: #b69dff; transform: translateY(-1px); }
     .level-tab:disabled { opacity: .48; cursor: not-allowed; transform: none; }
@@ -741,6 +751,15 @@
           <button class="level-tab" data-level="2" aria-selected="false" disabled><span class="tab-number">02</span><span class="tab-label">Orta</span></button>
           <button class="level-tab" data-level="3" aria-selected="false" disabled><span class="tab-number">03</span><span class="tab-label">İleri</span></button>
         </nav>
+        <section class="flow-assignment" aria-label="Öğrenciye özel atık akışı">
+          <div class="flow-assignment-head"><span class="flow-assignment-label">ÖĞRENCİ AKIŞI</span><span class="flow-badge" id="flowBadge" aria-live="polite">AKIŞ 01 / 30</span></div>
+          <div class="flow-controls">
+            <label class="sr-only" for="flowSelect">Akış kartı numarası</label>
+            <select class="flow-select" id="flowSelect" aria-label="Akış kartı numarası"></select>
+            <button class="flow-next" id="nextStudent" type="button">Sonraki öğrenci →</button>
+          </div>
+          <p class="flow-help" id="flowHelp">Her öğrenciye farklı numara verin. Aynı tahtada kullanırken her öğrenciden sonra “Sonraki öğrenci”ye dokunun.</p>
+        </section>
         <div class="mission-rule"></div>
         <div class="mission-label">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4.5 6v5.3c0 4.6 3.2 7.9 7.5 9.7 4.3-1.8 7.5-5.1 7.5-9.7V6L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 12 2.2 2.2 4.8-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -815,6 +834,20 @@
         icon: `<svg viewBox="0 0 48 56" aria-hidden="true"><path d="M19 4h10v8l5 6v29a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4V18l5-6V4Z" fill="#43ca83" stroke="#11814e" stroke-width="2"/><path d="M19 4h10v5H19zM15 27h18v10H15z" fill="#d9ffea"/><path d="M20 31h8" stroke="#168755" stroke-width="2.3" stroke-linecap="round"/></svg>`
       }
     };
+    const FLOW_TYPES = ["plastic", "paper", "metal", "glass"];
+    function makeFlowBank(length, seed, minKinds) {
+      let state = seed >>> 0;
+      const random = () => { state = (state * 1664525 + 1013904223) >>> 0; return state / 4294967296; };
+      const flows = [];
+      const seen = new Set();
+      while (flows.length < 30) {
+        const sequence = Array.from({length}, () => FLOW_TYPES[Math.floor(random() * FLOW_TYPES.length)]);
+        const signature = sequence.join("-");
+        if (new Set(sequence).size >= minKinds && !seen.has(signature)) { seen.add(signature); flows.push(sequence); }
+      }
+      return flows;
+    }
+
     const BLOCKS = {
       repeat4: { title: "4 kez tekrarla", desc: "Programı hatta gelen 4 ürüne uygula", color: "#1769d2", bg: "#e8f3ff", line: "#a9c8f2", symbol: "↻", type: "loop", count: 4 },
       repeat6: { title: "6 kez tekrarla", desc: "Programı hatta gelen 6 ürüne uygula", color: "#1769d2", bg: "#e8f3ff", line: "#a9c8f2", symbol: "↻", type: "loop", count: 6 },
@@ -831,27 +864,36 @@
     const LEVELS = {
       1: {
         kicker: "SEVİYE 1 · BAŞLANGIÇ", title: "Karışık ürünleri ayır",
-        copy: "Dört malzeme karışık sırayla hatta geliyor. Sensör ve koşul komutlarıyla ürünleri doğru kutulara yönlendir.",
-        goal: "Plastik, kâğıt, metal ve cam ürünleri doğru kutulara gönder.", subtitle: "Dört ürünü tanı ve uygun kutulara yönlendir.",
+        copy: "Her öğrenciye özel dört atık, farklı bir sırayla hatta geliyor. Sensör ve koşul komutlarıyla ürünleri doğru kutulara yönlendir.",
+        goal: "Dört ürünü malzemesine göre doğru kutulara gönder.", subtitle: "Dört atığı tanı ve uygun kutulara yönlendir.",
         hint: "‘4 kez tekrarla’ bloğunu en üste koy. Döngünün içine ‘Malzemeyi tanı’, dört malzeme koşulu ve ‘Bandı ilerlet’ komutlarını sırayla ekle.",
         items: ["plastic", "glass", "paper", "metal"], palette: ["repeat4", "read", "ifPlastic", "ifPaper", "ifMetal", "ifGlass", "advance"], initial: [], needsLoop: true
       },
       2: {
         kicker: "SEVİYE 2 · ORTA", title: "Uzun hattı yönet",
-        copy: "Altı ürün farklı sırayla geliyor; bazı malzemeler tekrar ediyor. Aynı programı bütün hatta uygula.",
+        copy: "Her akışta altı atık farklı sırada geliyor; bazı malzemeler tekrar ediyor. Aynı programı hatta uygula.",
         goal: "Altı ürünü malzemesine göre doğru kutulara gönder.", subtitle: "Tekrar eden ürünleri 6 adımlı döngüyle ayır.",
         hint: "‘6 kez tekrarla’ bloğunu en üste koy. Döngünün içine sensörü, dört koşulu ve bandı ilerlet komutunu yerleştir.",
         items: ["paper", "plastic", "metal", "glass", "plastic", "paper"], palette: ["repeat6", "read", "ifPlastic", "ifPaper", "ifMetal", "ifGlass", "advance"], initial: [], needsLoop: true
       },
       3: {
         kicker: "SEVİYE 3 · İLERİ", title: "Rotayı bul ve düzelt",
-        copy: "Sekiz ürün karışık sırada hatta geliyor. Programda cam ürünü yanlışlıkla kâğıt bölümüne gönderen koşulu bul.",
+        copy: "Sekiz atığın sırası her öğrenci için değişir. Programda camı yanlışlıkla kâğıt bölümüne gönderen koşulu bul.",
         goal: "Hatalı cam rotasını düzelt ve sekiz ürünü doğru bölümlere ulaştır.", subtitle: "Çalıştırma izini incele ve yanlış koşulu ayıkla.",
         hint: "Programı çalıştırıp izleme kaydına bak. Cam koşulundaki kâğıt hedefini sil, doğru cam koşulunu ekle ve programı yeniden çalıştır.",
         items: ["glass", "metal", "paper", "plastic", "glass", "plastic", "metal", "paper"], palette: ["repeat8", "read", "ifPlastic", "ifPaper", "ifMetal", "ifGlass", "advance"], initial: ["repeat8", "read", "ifPlastic", "ifPaper", "ifMetal", "ifGlassWrong", "advance"], needsLoop: true
       }
     };
 
+    const FLOW_BANKS = Object.fromEntries(Object.entries(LEVELS).map(([key, level]) => [
+      key, makeFlowBank(level.items.length, 4721 + Number(key) * 1097, Number(key) === 1 ? 3 : 4)
+    ]));
+    function loadSavedFlow() {
+      try { const value = Number(localStorage.getItem("geriDonusumFabrikasiFlow")); return Number.isInteger(value) && value >= 1 && value <= 30 ? value : 1; }
+      catch { return 1; }
+    }
+    function saveFlow() { try { localStorage.setItem("geriDonusumFabrikasiFlow", String(activeFlow)); } catch {} }
+    let activeFlow = loadSavedFlow();
     let activeLevel = 1;
     let program = [];
     let completed = new Set();
@@ -860,7 +902,7 @@
     const $ = (id) => document.getElementById(id);
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    function currentLevel() { return LEVELS[activeLevel]; }
+    function currentLevel() { const level = LEVELS[activeLevel]; return {...level, items: FLOW_BANKS[activeLevel][activeFlow - 1]}; }
     function syncLevelAccess() {
       document.querySelectorAll(".level-tab").forEach(button => {
         const locked = Number(button.dataset.level) > unlockedLevel;
@@ -877,12 +919,25 @@
       clearOutput();
       render();
     }
+    function changeFlow(flow, nextStudent = false) {
+      if (busy) return;
+      activeFlow = Math.max(1, Math.min(30, Number(flow) || 1));
+      saveFlow();
+      if (nextStudent) { activeLevel = 1; completed.clear(); unlockedLevel = 1; }
+      program = [...currentLevel().initial];
+      clearOutput();
+      render();
+    }
     function render() {
       const level = currentLevel();
       document.querySelectorAll(".level-tab").forEach(button => {
         button.setAttribute("aria-selected", Number(button.dataset.level) === activeLevel ? "true" : "false");
       });
       syncLevelAccess();
+      const flowSelect = $("flowSelect");
+      if (!flowSelect.options.length) flowSelect.innerHTML = Array.from({length: 30}, (_, index) => `<option value="${index + 1}">Akış ${String(index + 1).padStart(2, "0")}</option>`).join("");
+      flowSelect.value = String(activeFlow);
+      $("flowBadge").textContent = `AKIŞ ${String(activeFlow).padStart(2, "0")} / 30`;
       $("levelKicker").textContent = level.kicker;
       $("missionTitle").textContent = level.title;
       $("missionCopy").textContent = level.copy;
@@ -1137,6 +1192,8 @@
     }
 
     document.querySelectorAll(".level-tab").forEach(button => button.addEventListener("click", () => selectLevel(button.dataset.level)));
+    $("flowSelect").addEventListener("change", event => changeFlow(event.target.value));
+    $("nextStudent").addEventListener("click", () => changeFlow(activeFlow % 30 + 1, true));
     $("startGame").addEventListener("click", () => {
       $("startScreen").hidden = true;
       $("gameScreen").classList.add("active");
